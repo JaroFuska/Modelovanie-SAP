@@ -16,11 +16,12 @@ import java.util.Random;
 public class Main extends Application implements Runnable {
     Pane pg;
     double panelWidth;
-    int n = 1000;
+    int n = 100;
     Random rnd = new Random();
     int w = 800, h = 600;
     ArrayList<Box> boxes;
     Thread thread;
+    int DELTA_T = 20;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -76,7 +77,7 @@ public class Main extends Application implements Runnable {
             }
             for (Box b : boxes
                  ) {
-                b.move();
+                b.move(DELTA_T);
 
             }
         }

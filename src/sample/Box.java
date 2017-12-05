@@ -36,7 +36,8 @@ public class Box extends Rectangle {
         setY(y);
     }
 
-    public void move(){
+
+    public void move(int delta_t){
         double x = getX()+dx;
         double y = getY()+dy;
         if (x <= 0 || x >= w-getWidth()) {
