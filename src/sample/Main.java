@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Main extends Application implements Runnable {
+    private final Controller c = new Controller();
     Pane pg;
     double panelWidth;
     int n = 100;
@@ -21,7 +22,8 @@ public class Main extends Application implements Runnable {
     int w = 800, h = 600;
     ArrayList<Box> boxes;
     Thread thread;
-    int DELTA_T = 20;
+    //delta_t should be in seconds
+    double DELTA_T = 0.002;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -33,7 +35,7 @@ public class Main extends Application implements Runnable {
         pg.setMinHeight(root.getHeight());
         pg.setMinWidth(root.getWidth()-panelWidth);
         VBox vb = new VBox();
-        //TODO add some menu to the vb
+        //TODO add some menu to the vb maybe
         //TODO set width of menu components to panelWidth
         borderPane.setLeft(vb);
 
@@ -71,13 +73,15 @@ public class Main extends Application implements Runnable {
         //TODO move boxes
         while(true) {
             try {
+                //TODO make it without sleep by counting delta_t
                 thread.sleep(20);
             } catch (Exception e) {
                 // TODO: handle exception
             }
+            //TODO caunt delta_t here
             for (Box b : boxes
                  ) {
-                b.move(DELTA_T);
+                c.moveBox(b, DELTA_T);
 
             }
         }
