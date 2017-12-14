@@ -7,20 +7,23 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Main extends Application implements Runnable {
     private final Controller c = new Controller();
     Pane pg;
     double panelWidth;
-    int n = 100;
+    int n = 7   ;
     Random rnd = new Random();
     int w = 800, h = 600;
     ArrayList<Box> boxes;
+    ArrayList<Text> texts;
     Thread thread;
     //delta_t should be in seconds
     double DELTA_T = 0.002;
@@ -28,6 +31,8 @@ public class Main extends Application implements Runnable {
     @Override
     public void start(Stage primaryStage) throws Exception{
         panelWidth = 120;
+        boxes = new ArrayList();
+        texts = new ArrayList();
         primaryStage.setTitle("Sweep And Prune");
         BorderPane borderPane = new BorderPane();
         Scene root = new Scene(borderPane, w, h);
@@ -39,14 +44,15 @@ public class Main extends Application implements Runnable {
         //TODO set width of menu components to panelWidth
         borderPane.setLeft(vb);
 
-
-        boxes = new ArrayList();
         for (int i = 0; i < n; i++) {
-            boxes.add(new Box((double)rnd.nextInt(w-40), (double)rnd.nextInt(h-40), w, h));
+            Box b = new Box((double)rnd.nextInt(w-40), (double)rnd.nextInt(h-40), w, h, ""+i);
+            boxes.add(b);
+            texts.add(b.getText());
         }
         pg.getChildren().addAll(boxes);
+        pg.getChildren().addAll(texts);
 
-
+        c.setBoxes(boxes);
 
 
         thread = new Thread(this);
