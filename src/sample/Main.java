@@ -1,9 +1,12 @@
 package sample;
 
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -11,15 +14,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import javax.swing.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Main extends Application implements Runnable {
     private final Controller c = new Controller();
     Pane pg;
     double panelWidth;
-    int n = 7   ;
+    int n = 100;
     Random rnd = new Random();
     int w = 800, h = 600;
     ArrayList<Box> boxes;
@@ -27,9 +30,12 @@ public class Main extends Application implements Runnable {
     Thread thread;
     //delta_t should be in seconds
     double DELTA_T = 0.002;
+    private TextArea ta_delta;
+
+    private boolean pause = false;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public synchronized void start(Stage primaryStage) throws Exception {
         panelWidth = 120;
         boxes = new ArrayList();
         texts = new ArrayList();
@@ -38,14 +44,32 @@ public class Main extends Application implements Runnable {
         Scene root = new Scene(borderPane, w, h);
         pg = new Pane();
         pg.setMinHeight(root.getHeight());
-        pg.setMinWidth(root.getWidth()-panelWidth);
+        pg.setMaxWidth(root.getWidth() - panelWidth);
         VBox vb = new VBox();
+
+        Button btn_startStop = new Button("Stop");
+        btn_startStop.setMinWidth(panelWidth);
+        btn_startStop.setOnMouseClicked(event -> {
+            boolean start = btn_startStop.getText() == "Stop" ? false : true;
+            btn_startStop.setText(start ? "Stop" : "Start");
+            //TODO - not working
+            if (start) {
+                thread.start();
+            } else {
+                thread.interrupt();
+            }
+        });
+        ta_delta = new TextArea(DELTA_T + " s");
+        ta_delta.setMaxWidth(panelWidth);
+        ta_delta.setEditable(false);
+        ta_delta.setMaxHeight(10);
         //TODO add some menu to the vb maybe
         //TODO set width of menu components to panelWidth
-        borderPane.setLeft(vb);
+        vb.getChildren().addAll(btn_startStop, ta_delta);
+        borderPane.setRight(vb);
 
         for (int i = 0; i < n; i++) {
-            Box b = new Box((double)rnd.nextInt(w-40), (double)rnd.nextInt(h-40), w, h, ""+i);
+            Box b = new Box((double) rnd.nextInt(w - 40 - (int)panelWidth), (double) rnd.nextInt(h - 40), w - panelWidth, h, "" + i);
             boxes.add(b);
             texts.add(b.getText());
         }
@@ -76,20 +100,28 @@ public class Main extends Application implements Runnable {
 
     @Override
     public void run() {
-        //TODO move boxes
-        while(true) {
+        long startTime;
+        while (true) {
             try {
                 //TODO make it without sleep by counting delta_t
-                thread.sleep(20);
+//                thread.sleep((long)DELTA_T * 1000);
             } catch (Exception e) {
                 // TODO: handle exception
             }
-            //TODO caunt delta_t here
-            for (Box b : boxes
-                 ) {
+            startTime = System.currentTimeMillis();
+            for (Box b : boxes) {
                 c.moveBox(b, DELTA_T);
-
             }
+            long finishTime = System.currentTimeMillis();
+            DELTA_T = (finishTime - startTime);
+            DELTA_T /= 1000;
+            ta_delta.setText(DELTA_T + " s");
+//            DELTA_T = DELTA_T == 0 ? 0.001 : DELTA_T;
+//            System.out.println(DELTA_T);
+//            System.out.println(startTime);
+//            System.out.println(finishTime);
+
         }
     }
 }
+

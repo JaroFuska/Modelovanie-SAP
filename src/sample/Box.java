@@ -1,7 +1,7 @@
 package sample;
 
+
 import javafx.geometry.Point2D;
-import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -22,6 +22,7 @@ public class Box extends Rectangle {
     private Point2D vector; //vector representing speed and direction in pixels
     private double rectW; //width of rectangle in pixels
     private double rectH; //height of rectangle in pixels
+    private int ID;
 
     /**
      * Constructor making box in position x, y with random width and height and random speed in random direction
@@ -31,12 +32,13 @@ public class Box extends Rectangle {
      * @param screen_height height of main screen
      */
     public Box(double x, double y, double screen_width, double screen_height, String name) {
+        this.ID = Integer.parseInt(name);
         this.rnd = new Random();
         this.pos = new Point2D(x, y);
         this.setPos(pos);
         this.w = screen_width;
         this.h = screen_height;
-        this.setFill(Color.color(rnd.nextDouble(), rnd.nextDouble(), rnd.nextDouble()));
+        this.setFill(Color.color(rnd.nextDouble(), rnd.nextDouble(), rnd.nextDouble()).darker());
         this.rectH = (double)new Random().nextInt(25)+10;
         this.rectW = (double)new Random().nextInt(25)+10;
         this.setHeight(this.rectH);
@@ -45,9 +47,9 @@ public class Box extends Rectangle {
         this.text.setStroke(Color.WHITE);
         double dx, dy;
         do {
-            dx = (rnd.nextInt(5000) - 2500);
-            dy = (rnd.nextInt(5000) - 2500);
-        } while ((Math.abs(dx) < 100 || Math.abs(dy) < 100));
+            dx = (rnd.nextInt(500) - 250);
+            dy = (rnd.nextInt(500) - 250);
+        } while ((Math.abs(dx) < 20 || Math.abs(dy) < 20));
         vector = new Point2D(dx, dy);
         this.toFront();
     }
@@ -96,11 +98,13 @@ public class Box extends Rectangle {
 
     public boolean move(Point2D new_point){
         new_point = new_point.multiply(PIXELS_PER_METER);
-        if (new_point.getX() <= 0 || new_point.getX() >= w-getWidth()) {
+        if (new_point.getX() < 0 || new_point.getX() > w-getWidth()) {
+            setPos(new Point2D(new_point.getX() <= 0 ? 0 : w - getWidth(), getY()));
             vector = new Point2D(vector.getX() * -1, vector.getY());
             return false;
         }
-        if (new_point.getY() <= 0 || new_point.getY() >= h-getHeight()) {
+        if (new_point.getY() < 0 || new_point.getY() > h-getHeight()) {
+            setPos(new Point2D(getX(), new_point.getY() <= 0 ? 0 : h - getHeight()));
             vector = new Point2D(vector.getX(), vector.getY() * -1);
             return false;
         }

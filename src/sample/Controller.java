@@ -1,8 +1,7 @@
 package sample;
 
+
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -18,8 +17,9 @@ public class Controller {
     }
 
     public void moveBox(Box b, double delta_t) {
-        while(!b.move(explicitEulerNextPosition(b, delta_t))) {}
-        collisionDetection();
+        while (!b.move(explicitEulerNextPosition(b, delta_t))) {
+        }
+        naiveCollisionDetection();
     }
 
     // POINT{t+1} = POINT{t} + delta_t*v(t)
@@ -27,7 +27,7 @@ public class Controller {
         return b.getPosInMeters().add(b.getVectorInMeters().multiply(delta_t));
     }
 
-    public void collisionDetection(){
+    public void naiveCollisionDetection(){
         for (Box b : boxes) {
             for (Box b2 : boxes) {
                 if (b == b2){
@@ -40,4 +40,5 @@ public class Controller {
             }
         }
     }
+
 }

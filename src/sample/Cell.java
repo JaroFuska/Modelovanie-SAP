@@ -6,13 +6,15 @@ public class Cell {
 
     private double x;
     private double y;
-    private double size;
+    private double width;
+    private double height;
     private ArrayList<Box> boxes;
 
-    public Cell(double x, double y, double size) {
+    public Cell(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
-        this.size = size;
+        this.width = width;
+        this.height = height;
         boxes = new ArrayList<Box>();
     }
 
@@ -32,8 +34,12 @@ public class Cell {
         return y;
     }
 
-    public double getSize() {
-        return size;
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
     }
 
 
