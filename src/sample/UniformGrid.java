@@ -39,4 +39,18 @@ public class UniformGrid {
 
         }
     }
+
+    private void removeBox(Box b){
+        for(Cell i:cells){
+            if (i.getBoxes().contains(b)){
+                i.removeBox(b);
+            }
+
+        }
+    }
+
+    private void updateBox(Box b, double stepX, double stepY){ //nevedel som ako to nazvat stepX a Y udavaju kolko sa posuva led tak premenuj
+        removeBox(b);
+        //b.setPos((b.getPos().getX()+stepX, b.getPos().getY()+stepY));
+    }
 }

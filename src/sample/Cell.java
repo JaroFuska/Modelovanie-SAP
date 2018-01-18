@@ -22,6 +22,10 @@ public class Cell {
         boxes.add(b);
     }
 
+    public void removeBox(Box b){
+        boxes.remove(b);
+    }
+
     public ArrayList<Box> getBoxes() {
         return boxes;
     }

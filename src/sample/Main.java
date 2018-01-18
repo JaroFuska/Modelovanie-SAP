@@ -22,7 +22,7 @@ public class Main extends Application implements Runnable {
     private final Controller c = new Controller();
     Pane pg;
     double panelWidth;
-    int n = 100;
+    int n = 50;
     Random rnd = new Random();
     int w = 800, h = 600;
     ArrayList<Box> boxes;
