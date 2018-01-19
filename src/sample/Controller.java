@@ -16,13 +16,18 @@ public class Controller {
 
     public String moveBoxes(double delta_t) {
         for (Object b : boxes) {
-            moveBox((Box)b, delta_t);
+            //moveBox((Box)b, delta_t);
+            UniformGrid.updateBox((Box)b, delta_t);
         }
-        return naiveCollisionDetection();
+        //return naiveCollisionDetection();
+        return gridCollisionDetection();
     }
 
     public void setBoxes(ArrayList<Object> boxes) {
         this.boxes = boxes;
+        for (Object b : boxes) {
+            UniformGrid.addBox((Box)b);
+        }
     }
 
 
@@ -57,5 +62,21 @@ public class Controller {
         return pairs;
     }
 
+    public String gridCollisionDetection(){
+        String pairs = "";
+        ArrayList<Cell> cells = UniformGrid.getCells();
+        for(Cell cell:cells){
+            ArrayList<Box> cellBoxes = cell.getBoxes();
+            if (cellBoxes.size() > 1){
+                for (int i = 0; i < cellBoxes.size(); i++) {
+                    if (i != 0){
+                        pairs += "(" + cellBoxes.get(i-1).getText().getText() + ", " + cellBoxes.get(i).getText().getText() + ") ";
+                    }
+                }
+            }
+
+        }
+        return pairs;
+    }
 
 }

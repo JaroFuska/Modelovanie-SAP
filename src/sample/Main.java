@@ -26,7 +26,7 @@ public class Main extends Application {
     private final Controller c = new Controller();
     Pane pg;
     double panelWidth;
-    int n = 20;
+    int n = 30;
     Random rnd = new Random();
     int w = 800, h = 600;
     ArrayList<Object> boxes;
@@ -41,6 +41,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Timeline animation = null;
+        UniformGrid.createCells();
         panelWidth = 120;
         boxes = new ArrayList();
         texts = new ArrayList();
