@@ -2,6 +2,7 @@ package sample;
 
 
 import javafx.geometry.Point2D;
+import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,18 +10,28 @@ import java.util.List;
 
 public class Controller {
     private List<Object> boxes;
+    private int mode;
 
     public Controller() {
         boxes = Collections.synchronizedList(new ArrayList<>());
+        mode = 0;
     }
 
     public String moveBoxes(double delta_t) {
         for (Object b : boxes) {
-            //moveBox((Box)b, delta_t);
-            UniformGrid.updateBox((Box)b, delta_t);
+            if (mode == 0) {
+                moveBox((Box) b, delta_t);
+            }
+            else {
+                UniformGrid.updateBox((Box) b, delta_t);
+            }
         }
-        //return naiveCollisionDetection();
-        return gridCollisionDetection();
+        if (mode == 0) {
+            return naiveCollisionDetection();
+        }
+        else {
+            return gridCollisionDetection();
+        }
     }
 
     public void setBoxes(ArrayList<Object> boxes) {
@@ -77,6 +88,17 @@ public class Controller {
 
         }
         return pairs;
+    }
+
+    public void changeMode(Pane p){
+        if (mode == 0){
+            mode = 1;
+            UniformGrid.makeGrid(p);
+        }
+        else{
+            mode = 0;
+            UniformGrid.deleteGrid(p);
+        }
     }
 
 }

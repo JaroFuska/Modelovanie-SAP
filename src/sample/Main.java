@@ -26,9 +26,9 @@ public class Main extends Application {
     private final Controller c = new Controller();
     Pane pg;
     double panelWidth;
-    int n = 30;
+    int n = 50;
     Random rnd = new Random();
-    int w = 800, h = 600;
+    int w = 940, h = 600;
     ArrayList<Object> boxes;
     ArrayList<Text> texts;
     Thread thread;
@@ -42,7 +42,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Timeline animation = null;
         UniformGrid.createCells();
-        panelWidth = 120;
+        panelWidth = 140;
         boxes = new ArrayList();
         texts = new ArrayList();
         primaryStage.setTitle("Sweep And Prune");
@@ -54,18 +54,23 @@ public class Main extends Application {
         VBox vb = new VBox();
 
         Button btn_startStop = new Button("Stop");
+        Button btn_changeMode = new Button("Change Method");
         btn_startStop.setMinWidth(panelWidth);
+        btn_changeMode.setMinWidth(panelWidth);
         ta_delta = new TextArea(DELTA_T + " s");
         lab_pairs = new Label("Pairs:");
         ta_pairs = new TextArea();
         ta_delta.setMaxWidth(panelWidth);
         lab_pairs.setMaxWidth(panelWidth);
         ta_pairs.setMaxWidth(panelWidth);
+        vb.setMaxWidth(panelWidth);
+        ta_pairs.setWrapText(true);
+        ta_pairs.setMinHeight(400);
         ta_delta.setEditable(false);
         ta_pairs.setEditable(false);
         ta_delta.setMaxHeight(10);
         ta_pairs.setMaxHeight(50);
-        vb.getChildren().addAll(btn_startStop, ta_delta, lab_pairs, ta_pairs);
+        vb.getChildren().addAll(btn_startStop, btn_changeMode, ta_delta, lab_pairs, ta_pairs);
         borderPane.setRight(vb);
 
         for (int i = 0; i < n; i++) {
@@ -121,8 +126,11 @@ public class Main extends Application {
         animation.setCycleCount(Timeline.INDEFINITE);
         animation.play();
 
-    }
+        btn_changeMode.setOnMouseClicked(event -> {
+            c.changeMode(pg);
+        });
 
+    }
 
     public static void main(String[] args) {
         launch(args);
