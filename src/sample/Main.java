@@ -26,13 +26,16 @@ public class Main extends Application {
     private final Controller c = new Controller();
     Pane pg;
     double panelWidth;
+    /**
+     * Number of objects
+     */
     int n = 50;
     Random rnd = new Random();
     int w = 940, h = 600;
     ArrayList<Object> boxes;
     ArrayList<Text> texts;
     Thread thread;
-    //delta_t should be in seconds
+    //delta_t in seconds
     double DELTA_T = 0.002;
     private TextArea ta_delta;
     private TextArea ta_pairs;
@@ -94,6 +97,9 @@ public class Main extends Application {
         primaryStage.setScene(root);
         primaryStage.show();
 
+        /**
+         * Animation timer
+         */
         animation = new Timeline(new KeyFrame(Duration.seconds(DELTA_T), new EventHandler<ActionEvent>() {
 
             @Override
