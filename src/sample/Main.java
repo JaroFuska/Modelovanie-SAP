@@ -1,6 +1,7 @@
 package sample;
 
 
+import com.sun.javafx.perf.PerformanceTracker;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -29,9 +30,9 @@ public class Main extends Application {
     /**
      * Number of objects
      */
-    int n = 50;
+    int n = 150;
     Random rnd = new Random();
-    int w = 940, h = 600;
+    int w = 1000, h = 600;
     ArrayList<Object> boxes;
     ArrayList<Text> texts;
     Thread thread;
@@ -39,13 +40,18 @@ public class Main extends Application {
     double DELTA_T = 0.002;
     private TextArea ta_delta;
     private TextArea ta_pairs;
+    private TextArea ta_avGrid;
+    private TextArea ta_avNaive;
     private Label lab_pairs;
+    private Label lab_avGrid;
+    private Label lab_avNaive;
+    private static PerformanceTracker tracker;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Timeline animation = null;
         UniformGrid.createCells();
-        panelWidth = 140;
+        panelWidth = 200;
         boxes = new ArrayList();
         texts = new ArrayList();
         primaryStage.setTitle("Sweep And Prune");
@@ -62,18 +68,30 @@ public class Main extends Application {
         btn_changeMode.setMinWidth(panelWidth);
         ta_delta = new TextArea(DELTA_T + " s");
         lab_pairs = new Label("Pairs:");
+        lab_avNaive = new Label("Average fps for naive algorithm:");
+        lab_avGrid = new Label("Average fps for grid algorithm:");
         ta_pairs = new TextArea();
+        ta_avNaive = new TextArea();
+        ta_avGrid = new TextArea();
         ta_delta.setMaxWidth(panelWidth);
+        ta_avNaive.setMaxWidth(panelWidth);
+        ta_avGrid.setMaxWidth(panelWidth);
         lab_pairs.setMaxWidth(panelWidth);
+        lab_avNaive.setMaxWidth(panelWidth);
+        lab_avGrid.setMaxWidth(panelWidth);
         ta_pairs.setMaxWidth(panelWidth);
         vb.setMaxWidth(panelWidth);
         ta_pairs.setWrapText(true);
         ta_pairs.setMinHeight(400);
         ta_delta.setEditable(false);
         ta_pairs.setEditable(false);
+        ta_avNaive.setEditable(false);
+        ta_avGrid.setEditable(false);
         ta_delta.setMaxHeight(10);
+        ta_avNaive.setMaxHeight(10);
+        ta_avGrid.setMaxHeight(10);
         ta_pairs.setMaxHeight(50);
-        vb.getChildren().addAll(btn_startStop, btn_changeMode, ta_delta, lab_pairs, ta_pairs);
+        vb.getChildren().addAll(btn_startStop, btn_changeMode, ta_delta, lab_pairs, ta_pairs, lab_avNaive, ta_avNaive, lab_avGrid, ta_avGrid);
         borderPane.setRight(vb);
 
         for (int i = 0; i < n; i++) {
@@ -97,24 +115,42 @@ public class Main extends Application {
         primaryStage.setScene(root);
         primaryStage.show();
 
+        tracker = PerformanceTracker.getSceneTracker(root);
         /**
          * Animation timer
          */
         animation = new Timeline(new KeyFrame(Duration.seconds(DELTA_T), new EventHandler<ActionEvent>() {
+            Long gridCount = 0L;
+            Long naiveCount = 0L;
+            double gridSum = 0;
+            double naiveSum = 0;
 
             @Override
             public void handle(ActionEvent event) {
                 long startTime = System.currentTimeMillis();
                 String pairs = c.moveBoxes(DELTA_T);
+                float fps = getFPS();
+                if (c.getMode() == 0) {
+                    if (fps > 0) {
+                        naiveCount++;
+                        naiveSum += fps;
+                    }
+                } else {
+                    if (fps > 0) {
+                        gridCount++;
+                        gridSum += fps;
+                    }
+                }
                 long finishTime = System.currentTimeMillis();
                 DELTA_T = (finishTime - startTime);
                 DELTA_T /= 1000;
-                DELTA_T = DELTA_T == 0 ? 0.001 : DELTA_T;
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
                         ta_delta.setText(DELTA_T + " s");
                         ta_pairs.setText(pairs);
+                        ta_avNaive.setText(naiveSum / naiveCount + "");
+                        ta_avGrid.setText(gridSum / gridCount + "");
                     }
                 });
             }
@@ -136,6 +172,15 @@ public class Main extends Application {
             c.changeMode(pg);
         });
 
+    }
+
+    /**
+     * @return fps
+     */
+    private float getFPS() {
+        float fps = tracker.getAverageFPS();
+        tracker.resetAverageFPS();
+        return fps;
     }
 
     public static void main(String[] args) {

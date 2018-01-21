@@ -130,4 +130,11 @@ public class Controller {
         }
     }
 
+    /**
+     * @return collision detection mode
+     */
+    public int getMode() {
+        return mode;
+    }
+
 }
