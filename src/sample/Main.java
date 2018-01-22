@@ -68,8 +68,10 @@ public class Main extends Application {
         btn_changeMode.setMinWidth(panelWidth);
         ta_delta = new TextArea(DELTA_T + " s");
         lab_pairs = new Label("Pairs:");
-        lab_avNaive = new Label("Average fps for naive algorithm:");
-        lab_avGrid = new Label("Average fps for grid algorithm:");
+//        lab_avNaive = new Label("Average fps for naive algorithm:");
+        lab_avNaive = new Label("Actual fps for naive algorithm:");
+//        lab_avGrid = new Label("Average fps for grid algorithm:");
+        lab_avGrid = new Label("Actual fps for grid algorithm:");
         ta_pairs = new TextArea();
         ta_avNaive = new TextArea();
         ta_avGrid = new TextArea();
@@ -124,6 +126,8 @@ public class Main extends Application {
             Long naiveCount = 0L;
             double gridSum = 0;
             double naiveSum = 0;
+            double naiveFPS = 0;
+            double gridFPS = 0;
 
             @Override
             public void handle(ActionEvent event) {
@@ -134,11 +138,13 @@ public class Main extends Application {
                     if (fps > 0) {
                         naiveCount++;
                         naiveSum += fps;
+                        naiveFPS = fps;
                     }
                 } else {
                     if (fps > 0) {
                         gridCount++;
                         gridSum += fps;
+                        gridFPS = fps;
                     }
                 }
                 long finishTime = System.currentTimeMillis();
@@ -149,8 +155,12 @@ public class Main extends Application {
                     public void run() {
                         ta_delta.setText(DELTA_T + " s");
                         ta_pairs.setText(pairs);
-                        ta_avNaive.setText(naiveSum / naiveCount + "");
-                        ta_avGrid.setText(gridSum / gridCount + "");
+                        if (fps > 0) {
+//                            ta_avNaive.setText(naiveSum / naiveCount + "");
+                            ta_avNaive.setText(naiveFPS + "");
+//                            ta_avGrid.setText(gridSum / gridCount + "");
+                            ta_avGrid.setText(gridFPS + "");
+                        }
                     }
                 });
             }
