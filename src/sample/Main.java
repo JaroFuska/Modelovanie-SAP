@@ -30,12 +30,11 @@ public class Main extends Application {
     /**
      * Number of objects
      */
-    int n = 150;
+    int n = 10;
     Random rnd = new Random();
     int w = 1000, h = 600;
     ArrayList<Object> boxes;
     ArrayList<Text> texts;
-    Thread thread;
     //delta_t in seconds
     double DELTA_T = 0.002;
     private TextArea ta_delta;
@@ -150,6 +149,7 @@ public class Main extends Application {
                 long finishTime = System.currentTimeMillis();
                 DELTA_T = (finishTime - startTime);
                 DELTA_T /= 1000;
+                DELTA_T = DELTA_T == 0 ? 0.001 : DELTA_T;
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
