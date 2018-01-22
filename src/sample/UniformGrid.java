@@ -18,6 +18,8 @@ public class UniformGrid {
     private static double screenH;
     private static ArrayList<Cell> cells;
     private static ArrayList<Line> lines;
+    private static double cellWidth;
+    private static double cellHeight;
 
     public static ArrayList<Cell> getCells() {
         return cells;
@@ -34,8 +36,8 @@ public class UniformGrid {
         cells = new ArrayList<Cell>();
         lines = new ArrayList<Line>();
 
-        int cellWidth = (int) (screenW / colCount);
-        int cellHeight = (int) (screenW / rowCount);
+        cellWidth = screenW / colCount;
+        cellHeight = screenW / rowCount;
         for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < colCount; j++) {
                 Cell cell = new Cell(i * cellWidth, j * cellHeight, cellWidth, cellHeight);
@@ -48,25 +50,17 @@ public class UniformGrid {
      * @param b box to be added
      */
     public static void addBox(Box b) {
-        for (Cell i : cells) {
-            Rectangle r = new Rectangle((int) i.getX(), (int) i.getY(), (int) i.getWidth(), (int) i.getHeight());
-            if (r.intersects(b.getPos().getX(), b.getPos().getY(), b.getRectW(), b.getRectH())) {
-                i.addBox(b);
-            }
-
-        }
+        int cellNumber = (int) (b.getPos().getX()/cellWidth + b.getPos().getY()/cellHeight*colCount);
+        cells.get(cellNumber).addBox(b);
+        System.out.println(cellNumber);
     }
 
     /**
      * @param b box to be removed
      */
     public static void removeBox(Box b) {
-        for (Cell i : cells) {
-            if (i.getBoxes().contains(b)) {
-                i.removeBox(b);
-            }
-
-        }
+        int cellNumber = (int) (b.getPos().getX()/cellWidth + b.getPos().getY()/cellHeight*colCount);
+        cells.get(cellNumber).removeBox(b);
     }
 
     /**

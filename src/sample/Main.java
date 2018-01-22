@@ -30,7 +30,7 @@ public class Main extends Application {
     /**
      * Number of objects
      */
-    int n = 10;
+    int n = 1;
     Random rnd = new Random();
     int w = 1000, h = 600;
     ArrayList<Object> boxes;
